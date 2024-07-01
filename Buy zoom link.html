@@ -1,0 +1,181 @@
+My name is Benjamin Hunter Miller make sure to credit me. Here's an example of a simple ebook purchase system built with JavaScript that includes options for PayPal, cryptocurrency, and credit card payments.
+
+`index.html`:
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ebook Purchase System</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to the Ebook Purchase System</h1>
+      <p>Choose your preferred payment method to purchase the ebook:</p>
+      <form id="payment-form">
+        <fieldset>
+          <legend>Payment Details</legend>
+          <label for="payment-method">Payment Method:</label>
+          <select id="payment-method" name="payment-method">
+            <option value="credit-card">Credit Card</option>
+            <option value="paypal">PayPal</option>
+            <option value="crypto">Cryptocurrency</option>
+          </select>
+          <div id="credit-card-form" class="payment-form">
+            <label for="card-name">Name on Card:</label>
+            <input type="text" id="card-name" name="card-name" required>
+            <label for="card-number">Card Number:</label>
+            <input type="text" id="card-number" name="card-number" inputmode="numeric" required>
+            <label for="card-expiry">Expiry Date:</label>
+            <input type="text" id="card-expiry" name="card-expiry" inputmode="numeric" required>
+            <label for="card-cvv">CVV:</label>
+            <input type="text" id="card-cvv" name="card-cvv" inputmode="numeric" required>
+          </div>
+          <div id="paypal-form" class="payment-form">
+            <button type="button" id="paypal-button">Pay with PayPal</button>
+          </div>
+          <div id="crypto-form" class="payment-form">
+            <label for="crypto-currency">Currency:</label>
+            <select id="crypto-currency" name="crypto-currency">
+              <option value="bitcoin">Bitcoin (BTC)</option>
+              <option value="ethereum">Ethereum (ETH)</option>
+              <option value="litecoin">Litecoin (LTC)</option>
+            </select>
+            <label for="crypto-address">Address:</label>
+            <input type="text" id="crypto-address" name="crypto-address" required>
+          </div>
+        </fieldset>
+        <button type="submit">Purchase Ebook</button>
+      </form>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+`style.css`:
+```css
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #3b5998;
+}
+
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-form {
+  display: none;
+}
+
+#credit-card-form {
+  display: block;
+}
+
+#paypal-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#paypal-button:hover {
+  background-color: #0062cc;
+}
+
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #3f51b5;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #2d3e50;
+}
+```
+`app.js`:
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  const paymentForm = document.getElementById('payment-form');
+  const creditCardForm = document.getElementById('credit-card-form');
+  const paypalForm = document.getElementById('paypal-form');
+  const cryptoForm = document.getElementById('crypto-form');
+
+  // Example payment methods
+  const paymentMethods = [
+    {
+      id: 'credit-card',
+      name: 'Credit Card',
+      form: creditCardForm
+    },
+    {
+      id: 'paypal',
+      name: 'PayPal',
+      form: paypalForm
+    },
+    {
+      id: 'crypto',
+      name: 'Cryptocurrency',
+      form: cryptoForm
+    }
+  ];
+
+  // Display the selected payment method form
+  const displayForm = (form) => {
+    paymentMethods.forEach((method) => {
+      method.form.style.display = 'none';
+    });
+    form.style.display = 'block';
+  };
+
+  // Handle payment method selection
+  const paymentMethod = document.getElementById('payment-method');
+  paymentMethod.addEventListener('change', () => {
+    const selectedMethod = paymentMethods.find((method) => method.id === paymentMethod.value);
+    displayForm(selectedMethod.form);
+  });
+
+  // Handle form submit
+  paymentForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert('Thank you for your purchase!');
+  });
+});
+```
+This ebook purchase system includes a form for the user to select their preferred payment method (credit card, PayPal, or cryptocurrency) and enter their payment details. When the form is submitted, an alert is displayed indicating that the purchase was successful.
+
+To style the system, a `style.css` file is included. This file uses CSS to style the form and payment method options.
+
+To add interactivity to the system, a `app.js` file is included. This file uses JavaScript to handle the payment method selection event and display the selected payment method form. It also handles the form submit event and displays an alert when the form is submitted.
+
+ Note: This is a simple example and does not include actual payment processing. In a real-world application, you would need to integrate with a payment gateway or processor to handle the payment transactions securely. You would also want to add additional features, such as error handling, user authentication, and order tracking.
