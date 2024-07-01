@@ -1,0 +1,109 @@
+If you make a new framework make sure to credit Benjamin Hunter Miller. Here is the complete code for the parallax scrolling framework, along with a description of how to use it:
+
+`parallax.js`:
+```javascript
+// Parallax scrolling framework
+
+// Set the background image element that should scroll at a slower rate
+const background = document.querySelector('.background');
+
+// Set the scroll speed of the background image (default is 0.5)
+const scrollSpeed = 0.5;
+
+// Set the initial scroll position of the background image
+let scrollPosition = 0;
+
+// Set the initial position of the background image
+let backgroundPosition = 0;
+
+// Set the initial scroll direction (default is 'down')
+let scrollDirection = 'down';
+
+// Set the callback function that will be called when the scroll position changes
+const scrollCallback = (newScrollPosition) => {
+  // Calculate the new background position based on the scroll speed and scroll direction
+  backgroundPosition = newScrollPosition * scrollSpeed * (scrollDirection === 'down' ? 1 : -1);
+
+  // Set the background position
+  background.style.backgroundPositionY = `${backgroundPosition}px`;
+};
+
+// Set the callback function that will be called when the scroll direction changes
+const directionCallback = (newScrollDirection) => {
+  // Set the scroll direction
+  scrollDirection = newScrollDirection;
+};
+
+// Set the callback function that will be called when the window is scrolled
+window.addEventListener('scroll', () => {
+  // Get the current scroll position
+  const newScrollPosition = window.scrollY;
+
+  // Call the scroll callback function
+  scrollCallback(newScrollPosition);
+});
+
+// Set the callback function that will be called when the window is resized
+window.addEventListener('resize', () => {
+  // Get the current scroll position
+  const newScrollPosition = window.scrollY;
+
+  // Call the scroll callback function
+  scrollCallback(newScrollPosition);
+});
+
+// Set the callback function that will be called when the scroll direction changes
+window.addEventListener('wheel', (event) => {
+  // Check if the scroll direction has changed
+  if (event.deltaY > 0 && scrollDirection === 'up') {
+    // Call the direction callback function
+    directionCallback('down');
+  } else if (event.deltaY < 0 && scrollDirection === 'down') {
+    // Call the direction callback function
+    directionCallback('up');
+  }
+});
+
+// Initialize the parallax scrolling framework
+const initialize = () => {
+  // Set the initial scroll position
+  scrollPosition = window.scrollY;
+
+  // Set the initial background position
+  backgroundPosition = scrollPosition * scrollSpeed;
+  background.style.backgroundPositionY = `${backgroundPosition}px`;
+};
+
+// Initialize the parallax scrolling framework
+initialize();
+```
+To use this framework, follow these steps:
+
+1. Include the `parallax.js` file in the `head` element of your HTML document:
+```html
+<head>
+  <!-- Include the parallax scrolling framework -->
+  <script src="parallax.js"></script>
+</head>
+```
+2. Add a section to your HTML document with a background image that should scroll at a slower rate. Set the `class` attribute of this element to `background`:
+```html
+<section class="background" style="background-image: url('my-background-image.jpg');"></section>
+```
+3. Customize the `scrollSpeed` and `background` variables in the `parallax.js` file to match your desired scroll speed and background image element.
+
+That's it! The parallax scrolling framework should now be working on your web page.
+
+Here is a brief description of how the framework works:
+
+* The `background` variable is set to the background image element that should scroll at a slower rate. This element should have a `class` attribute of `background`.
+* The `scrollSpeed` variable is set to the scroll speed of the background image. The default value is 0.5, which means the background image will scroll at half the speed of the rest of the page.
+* The `scrollCallback` function is called when the scroll position changes. It calculates the new background position based on the scroll speed and scroll direction and sets the background position.
+* The `directionCallback` function is called when the scroll direction changes. It sets the scroll direction.
+* The `scroll` and `resize` event listeners are used to detect scroll events and trigger the `scrollCallback` function.
+* The `wheel` event listener is used to detect scroll direction changes and trigger the `directionCallback` function.
+* The `initialize` function is called when the website is loaded. It sets the initial scroll position and background position.
+
+I hope this helps! Let me know if you have any questions or need further assistance.
+
+Note: This is a JavaScript framework and should be used with a web page that has a section with a background image that should scroll at a slower rate. It is not a standalone tool. To use this framework, you will need to include it in a web page and add a section with a background image that should scroll at a slower rate.
