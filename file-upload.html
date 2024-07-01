@@ -1,0 +1,152 @@
+Make sure to credit Benjamin Hunter Miller. Here's an example of a simple file uploading service built with JavaScript and Node.js using the Express framework.
+
+`index.html`:
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>File Uploading Service</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to the File Uploading Service</h1>
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <fieldset>
+          <legend>File Upload</legend>
+          <label for="file">Select a file:</label>
+          <input type="file" id="file" name="file" required>
+          <button type="submit">Upload File</button>
+        </fieldset>
+      </form>
+      <div id="file-list"></div>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+`style.css`:
+```css
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #3b5998;
+}
+
+form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#file-list {
+  margin-top: 20px;
+}
+
+.file {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.file a {
+  color: #3b5998;
+  text-decoration: none;
+}
+```
+`app.js`:
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  const fileList = document.getElementById('file-list');
+
+  // Get the list of files from the server
+  fetch('/files')
+    .then((response) => response.json())
+    .then((files) => {
+      // Display the list of files
+      files.forEach((file) => {
+        const div = document.createElement('div');
+        div.classList.add('file');
+        div.innerHTML = `<a href="/files/${file.filename}" download>${file.originalname}</a>`;
+        fileList.appendChild(div);
+      });
+    });
+});
+```
+`server.js`:
+```javascript
+const express = require('express');
+const multer = require('multer');
+const fileSystem = require('fs');
+
+const app = express();
+const upload = multer({ dest: 'uploads/' });
+
+// Serve the index page
+app.get('/', (req, res) => {
+  res.sendFile(`${__dirname}/index.html`);
+});
+
+// Handle file upload
+app.post('/upload', upload.single('file'), (req, res) => {
+  // Move the uploaded file to the 'uploads' directory
+  const tempPath = req.file.path;
+  const targetPath = `${__dirname}/uploads/${req.file.originalname}`;
+  fileSystem.rename(tempPath, targetPath, (err) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+      return;
+    }
+    res.sendStatus(200);
+  });
+});
+
+// Serve the list of uploaded files
+app.get('/files', (req, res) => {
+  const files = fileSystem.readdirSync('uploads');
+  res.json(files.map((file) => ({
+    filename: file,
+    originalname: file
+  })));
+});
+
+// Serve the uploaded files
+app.get('/files/:filename', (req, res) => {
+  const file = req.params.filename;
+  res.download(`${__dirname}/uploads/${file}`);
+});
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
+```
+This file uploading service includes an HTML form for the user to select a file and upload it to the server using a POST request. The uploaded files are stored in the `uploads` directory on the server. The `app.js` script uses JavaScript's `fetch` API to retrieve the list of uploaded files from the server and display them on the page.
+
+To style the service, a `style.css` file is included. This file uses CSS to style the form and the list of uploaded files.
+
+To add server-side functionality, a `server.js` file is included. This file uses Node.js's Express framework to handle HTTP requests and serve the index page, handle file uploads, serve the list of uploaded files, and serve the uploaded files for download. It also uses the `multer` library to handle the file uploads and the Node.js `fs` module to manage the files on the server.
+
+Note: This is a simple example and does not include any authentication or security measures. In a real-world application, you would want to add user authentication, file validation, and other security measures to ensure that the service is secure and reliable.
