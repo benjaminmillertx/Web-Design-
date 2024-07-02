@@ -1,0 +1,160 @@
+A framework for creating dynamic websites using PHP. This framework is designed to be modular and easy to use, with separate components for handling data models, controllers, and views.
+framework/:
+index.php: The main entry point for the application.
+public/: A directory for public assets, such as CSS, JavaScript, and images.
+src/: A directory for the core framework code.
+controllers/: A directory for controller classes.
+models/: A directory for data model classes.
+views/: A directory for view templates.
+index.php:
+<?php
+
+// Load the framework
+require_once 'src/bootstrap.php';
+
+// Create a new instance of the application
+$app = new App();
+
+// Define the routes for the application
+$app->router->get('/', 'HomeController@index');
+$app->router->get('/about', 'AboutController@index');
+$app->router->get('/contact', 'ContactController@index');
+
+// Run the application
+$app->run();
+
+// Framework bootstrap file
+<?php
+
+// Autoload the framework classes
+function autoloader($class) {
+  $directory = 'src/' . str_replace('\\', '/', $class) . '.php';
+  if (file_exists($directory)) {
+    require_once $directory;
+  }
+}
+
+spl_autoload_register('autoloader');
+
+// Create a new instance of the router
+$router = new Router();
+
+// Set the application's router
+App::setRouter($router);
+
+// Create a new instance of the view
+$view = new View();
+
+// Set the application's view
+App::setView($view);
+
+// Create a new instance of the database
+$db = new Database();
+
+// Set the application's database
+App::setDatabase($db);
+
+// Create a new instance of the app
+class App
+{
+  // Set the router
+  public static $router;
+
+  // Set the view
+  public static $view;
+
+  // Set the database
+  public static $database;
+
+  // Set the router
+  public static function setRouter($router)
+  {
+    self::$router = $router;
+  }
+
+  // Set the view
+  public static function setView($view)
+  {
+    self::$view = $view;
+  }
+
+  // Set the database
+  public static function setDatabase($database)
+  {
+    self::$database = $database;
+  }
+
+  // Run the application
+  public function run()
+  {
+    // Get the route from the router
+    $route = self::$router->getRoute();
+
+    // Check if the route exists
+    if ($route) {
+      // Split the route into the controller and action
+      list($controller, $action) = explode('@', $route);
+
+      // Create a new instance of the controller
+      $controller = new $controller();
+
+      // Check if the action exists
+      if (method_exists($controller, $action)) {
+        // Call the action
+        $controller->$action();
+      } else {
+        // Display a 404 error
+        self::$view->render('404');
+      }
+    } else {
+      // Display a 404 error
+      self::$view->render('404');
+    }
+  }
+}
+
+// Base controller class
+abstract class Controller
+{
+  // Set the view
+  protected $view;
+
+  // Set the view
+  public function __construct()
+  {
+    // Set the view
+    $this->view = new View();
+  }
+}
+
+// Base model class
+abstract class Model
+{
+  // Set the database
+  protected $db;
+
+  // Set the database
+  public function __construct()
+  {
+    // Set the database
+    $this->db = new Database();
+  }
+}
+
+// Base view class
+class View
+{
+  // Render a view template
+  public function render($template, $data = [])
+  {
+    // Extract the data
+    extract($data);
+
+    // Include the view template
+    include 'src/views/' . $template . '.php';
+  }
+}
+
+// Router class
+class Router
+
