@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <span class="icon">🌤️</span>
+                <input type="text" placeholder="Ankara" id="cityInput">
+            </div>
+            <div class="header-right">
+                <button class="support-btn">Support Project</button>
+            </div>
+        </header>
+        <main>
+            <section class="today-overview">
+                <div class="main-info">
+                    <span class="temperature">28.6°C</span>
+                    <span class="weather-desc">Clear Sky</span>
+                    <div class="location-info">
+                        <span>Istanbul</span>
+                        <span>28 August Monday</span>
+                    </div>
+                </div>
+                <div class="additional-info">
+                    <div class="info-item">Wind Speed: 28 km/h</div>
+                    <div class="info-item">Humidity: 48%</div>
+                    <div class="info-item">Pressure: 1008 hPa</div>
+                    <div class="info-item">Visibility: 10 km</div>
+                    <div class="info-item">Sunrise: 06:26</div>
+                    <div class="info-item">Sunset: 19:44</div>
+                </div>
+            </section>
+            <section class="next-five-days">
+                <div class="tabs">
+                    <button class="tab active" data-day="all">All Days</button>
+                    <button class="tab" data-day="28 Aug">28 Aug Mon</button>
+                    <button class="tab" data-day="29 Aug">29 Aug Tue</button>
+                    <button class="tab" data-day="30 Aug">30 Aug Wed</button>
+                    <button class="tab" data-day="31 Aug">31 Aug Thu</button>
+                    <button class="tab" data-day="1 Sep">1 Sep Fri</button>
+                    <button class="tab" data-day="2 Sep">2 Sep Sat</button>
+                </div>
+                <div class="forecast">
+                    <!-- Forecast items will be added here dynamically -->
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
