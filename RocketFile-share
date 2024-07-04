@@ -1,0 +1,196 @@
+Creating a file-sharing website with a clean architecture and snake_case naming convention involves several steps. Below, I’ll provide a framework using Node.js with Express for the backend and a simple frontend using HTML and JavaScript. We’ll also use MongoDB for storage.
+
+Prerequisites
+
+	1.	Node.js and npm: Ensure you have Node.js and npm installed.
+	2.	MongoDB: Set up a MongoDB instance or use a service like MongoDB Atlas.
+
+Project Structure
+
+file-sharing-website/
+├── backend/
+│   ├── controllers/
+│   │   └── file_controller.js
+│   ├── models/
+│   │   └── file_model.js
+│   ├── routes/
+│   │   └── file_routes.js
+│   ├── app.js
+│   └── config.js
+├── frontend/
+│   ├── index.html
+│   ├── upload.js
+└── package.json
+
+Step 1: Set Up the Backend
+
+1. Initialize the Project
+
+mkdir file-sharing-website
+cd file-sharing-website
+mkdir backend frontend
+cd backend
+npm init -y
+npm install express mongoose multer
+
+2. Create config.js
+
+// backend/config.js
+module.exports = {
+    mongo_uri: 'mongodb://localhost:27017/file_sharing',
+    port: 3000
+};
+
+3. Create the Express App (app.js)
+
+// backend/app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const file_routes = require('./routes/file_routes');
+const config = require('./config');
+
+const app = express();
+
+mongoose.connect(config.mongo_uri, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log(err));
+
+app.use(express.json());
+app.use('/files', file_routes);
+
+const port = config.port;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+
+4. Create the File Model (file_model.js)
+
+// backend/models/file_model.js
+const mongoose = require('mongoose');
+
+const file_schema = new mongoose.Schema({
+    file_name: { type: String, required: true },
+    file_path: { type: String, required: true },
+    upload_date: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('File', file_schema);
+
+5. Create the File Controller (file_controller.js)
+
+// backend/controllers/file_controller.js
+const File = require('../models/file_model');
+const path = require('path');
+const fs = require('fs');
+
+exports.upload_file = async (req, res) => {
+    try {
+        const file = new File({
+            file_name: req.file.originalname,
+            file_path: req.file.path
+        });
+        await file.save();
+        res.status(201).json({ message: 'File uploaded successfully', file });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.download_file = async (req, res) => {
+    try {
+        const file = await File.findById(req.params.id);
+        if (!file) {
+            return res.status(404).json({ message: 'File not found' });
+        }
+        res.download(file.file_path, file.file_name);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+6. Create the File Routes (file_routes.js)
+
+// backend/routes/file_routes.js
+const express = require('express');
+const multer = require('multer');
+const file_controller = require('../controllers/file_controller');
+const path = require('path');
+
+const router = express.Router();
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
+const upload = multer({ storage });
+
+router.post('/upload', upload.single('file'), file_controller.upload_file);
+router.get('/download/:id', file_controller.download_file);
+
+module.exports = router;
+
+Step 2: Set Up the Frontend
+
+1. Create index.html
+
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File Sharing</title>
+</head>
+<body>
+    <h1>File Sharing</h1>
+    <form id="upload-form">
+        <input type="file" id="file-input" required>
+        <button type="submit">Upload</button>
+    </form>
+    <div id="download-links"></div>
+    <script src="upload.js"></script>
+</body>
+</html>
+
+2. Create upload.js
+
+// frontend/upload.js
+document.getElementById('upload-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const fileInput = document.getElementById('file-input');
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    try {
+        const response = await fetch('http://localhost:3000/files/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+            const downloadLinks = document.getElementById('download-links');
+            const link = document.createElement('a');
+            link.href = `http://localhost:3000/files/download/${result.file._id}`;
+            link.textContent = `Download ${result.file.file_name}`;
+            downloadLinks.appendChild(link);
+        } else {
+            alert(`Error: ${result.error}`);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+
+Step 3: Run the Application
+
+	1.	Start MongoDB: Ensure your MongoDB instance is running.
+	2.	Start the Server: Navigate to the backend directory and run the server:
+
+node app.js
+
+
+	3.	Open the Frontend: Open frontend/index.html in your browser.
+
+This setup provides a basic file-sharing website where users can upload files and receive download links. The backend handles file storage and management, while the frontend provides a simple interface for uploading and downloading files.
