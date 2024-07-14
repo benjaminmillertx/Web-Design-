@@ -1,1 +1,141 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benjamin Miller Crates</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .header h1 {
+            font-size: 36px;
+            color: #333;
+            margin: 0;
+        }
+        .charts-container {
+            width: 80%;
+            max-width: 800px;
+        }
+        .chart {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://img.icons8.com/ios-filled/50/000000/wooden-box.png" alt="Crates Logo">
+        <h1>Benjamin Miller Crates</h1>
+    </div>
+    <div class="charts-container">
+        <div class="chart">
+            <canvas id="quantityChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="countryChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="incomeChart"></canvas>
+        </div>
+    </div>
+    <script>
+        const quantityData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Quantity Sold',
+                data: [150, 200, 175, 225, 180, 240],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+        
+        const countryData = {
+            labels: ['USA', 'Canada', 'UK', 'Germany', 'France', 'Australia'],
+            datasets: [{
+                label: 'Crates Sold by Country',
+                data: [500, 300, 400, 250, 200, 350],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+        
+        const incomeData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Gross Income (in USD)',
+                data: [15000, 20000, 17500, 22500, 18000, 24000],
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        };
+        
+        const quantityChart = new Chart(document.getElementById('quantityChart'), {
+            type: 'bar',
+            data: quantityData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        const countryChart = new Chart(document.getElementById('countryChart'), {
+            type: 'pie',
+            data: countryData,
+            options: {
+                responsive: true
+            }
+        });
+        
+        const incomeChart = new Chart(document.getElementById('incomeChart'), {
+            type: 'line',
+            data: incomeData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
