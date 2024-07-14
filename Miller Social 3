@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miller Social</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        .header {
+            background-color: #dd4b39;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .header .search-bar input {
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            width: 300px;
+        }
+        .header .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .sidebar, .right-sidebar {
+            width: 20%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin: 0 10px;
+        }
+        .main-content {
+            width: 40%;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .post {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .post img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        .post h3 {
+            margin-top: 0;
+        }
+        .post-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .post-form textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-family: Arial, sans-serif;
+        }
+        .post-form button {
+            background-color: #dd4b39;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .post-form button:hover {
+            background-color: #c23321;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Miller Social</div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search Miller Social">
+        </div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Profile</a>
+            <a href="#">Circles</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Menu</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Explore</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Profile</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="post-form">
+                <textarea placeholder="Share what's new..."></textarea>
+                <button>Post</button>
+            </div>
+            <div class="post">
+                <h3>John Doe</h3>
+                <p>This is a post on the Miller Social clone.</p>
+                <img src="https://via.placeholder.com/400x200" alt="Post image">
+            </div>
+            <div class="post">
+                <h3>Jane Smith</h3>
+                <p>Another post on the Miller Social clone.</p>
+                <img src="https://via.placeholder.com/400x200" alt="Post image">
+            </div>
+        </div>
+        <div class="right-sidebar">
+            <h3>Who to follow</h3>
+            <ul>
+                <li>John Doe</li>
+                <li>Jane Smith</li>
+                <li>Mike Johnson</li>
+                <li>Emily Davis</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
