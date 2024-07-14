@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Benjamin Moon Studios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 50px;
+    }
+
+    #header {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      width: 800px;
+      text-align: center;
+    }
+
+    #content {
+      display: flex;
+      flex-wrap: wrap;
+      width: 800px;
+    }
+
+    .image-container {
+      flex: 1;
+      margin: 10px;
+    }
+
+    .image-container img {
+      width: 100%;
+    }
+
+    .paragraph-container {
+      flex: 2;
+      margin: 10px;
+    }
+
+    .paragraph-container p {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1>Benjamin Moon Studios</h1>
+  </div>
+  <div id="content">
+    <div class="image-container">
+      <img src="moon.jpg" alt="Moon">
+    </div>
+    <div class="paragraph-container">
+      <p>Benjamin Moon Studios is a state-of-the-art recording facility that offers a range of services for musicians, producers, and engineers. Our studio is equipped with the latest technology and equipment, and our team of experienced professionals is dedicated to helping our clients achieve the best possible results. Whether you are looking to record an album, produce a demo, or mix and master a project, Benjamin Moon Studios has the expertise and resources to help you realize your vision.</p>
+    </div>
+    <div class="image-container">
+      <img src="sound-studio.jpg" alt="Sound Studio">
+    </div>
+    <div class="paragraph-container">
+      <p>At Benjamin Moon Studios, we offer a comfortable and creative environment for our clients to work in. Our spacious live room and isolation booths provide the flexibility and acoustic options you need to capture your sound, and our control room is equipped with a range of consoles, outboard gear, and software to help you shape your sound. Our team of engineers and producers will work with you to understand your goals and help you achieve them, whether you are looking for a polished, radio-ready sound or a raw, gritty vibe.</p>
+    </div>
+    <div class="image-container">
+      <img src="recording-studio.jpg" alt="Recording Studio">
+    </div>
+    <div class="paragraph-container">
+      <p>Benjamin Moon Studios is more than just a recording studio. We are a community of musicians, producers, and engineers who are passionate about music and sound. We believe that the best results come from collaboration and creativity, and we strive to create an environment where our clients can feel inspired and supported. Whether you are a seasoned pro or just starting out, Benjamin Moon Studios is the perfect place to bring your ideas to life.</p>
+    </div>
+  </div>
+</body>
+</html>
