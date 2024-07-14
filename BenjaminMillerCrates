@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Benjamin Miller Crates World Wide Data Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 50px;
+    }
+
+    #chart {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 20px;
+      width: 800px;
+    }
+
+    .axis {
+      font-size: 14px;
+    }
+
+    .bar {
+      transition: height 0.3s;
+    }
+
+    .bar:hover {
+      fill: darkgray;
+    }
+  </style>
+</head>
+<body>
+  <div id="chart">
+    <svg width="800" height="400">
+      <g transform="translate(50, 0)">
+        <g class="axis x-axis"></g>
+      </g>
+      <g transform="translate(50, 0)">
+        <g class="axis y-axis"></g>
+      </g>
+      <g class="bars"></g>
+    </svg>
+  </div>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script>
+    // Define the data
+    const data = {
+      quantitySold: [
+        { region: "North America", value: 10000 },
+        { region: "South America", value: 5000 },
+        { region: "Europe", value: 7000 },
+        { region: "Asia", value: 12000 },
+        { region: "Africa", value: 3000 },
+        { region: "Australia", value: 4000 }
+      ],
+      grossAnnualIncome: [
+        { region: "North America", value: 1000000 },
+        { region: "South America", value: 500000 },
+        { region: "Europe", value: 700000 },
+        { region: "Asia", value: 1200000 },
+        { region: "Africa", value: 300000 },
+        { region: "Australia", value: 400000 }
+      ]
+    };
+
+    // Define the chart
+    const chart = d3.select("#chart");
+    const chartWidth = +chart.attr("width");
+    const chartHeight = +chart.attr("height");
+    const margin = { top: 50, bottom: 50, left: 50, right: 50 };
+    const innerWidth = chartWidth - margin.left - margin.right;
+    const innerHeight = chartHeight - margin.top - margin.bottom;
+
+    // Define the x-scale
+    const xScale = d3.scaleBand()
+      .domain(data.quantitySold.map(d => d.region))
+      .range([0, innerWidth])
+      .padding(0.2);
+
+    // Define the y-scale
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(data.quantitySold, d => d.value)])
+      .range([innerHeight, 0]);
+
+    // Define the x-axis
+    const xAxis = d3.axisBottom()
+      .scale(xScale);
+
+    // Define the y-axis
+    const yAxis = d3.axisLeft()
+      .scale(yScale);
+
+    // Define the bars
+    const bars = chart.select(".bars")
+      .selectAll("rect")
+      .data(data.quantitySold)
+      .enter()
+      .append("rect")
+      .attr("x", d => xScale(d.region))
+ .attr("y", d => yScale(d.value))
+  .attr("width", xScale.bandwidth())
+  .attr("height", d => innerHeight - yScale(d.value))
+  .attr("fill", "steelblue");
+
+// Define the x-axis
+chart.select(".x-axis")
+  .attr("transform", `translate(0, ${innerHeight})`)
+  .call(xAxis);
+
+// Define the y-axis
+chart.select(".y-axis")
+  .call(yAxis);
+  </script>
+</body>
+</html>
