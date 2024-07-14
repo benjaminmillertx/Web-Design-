@@ -1,1 +1,83 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benjamin Miller Medical</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #1877f2;
+            margin: 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        form input, form textarea {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form textarea {
+            resize: vertical;
+        }
+        form button {
+            padding: 10px;
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #155db2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://img.icons8.com/ios-filled/50/000000/medical-doctor.png" alt="Medical Icon">
+            <h1>Benjamin Miller Medical</h1>
+        </div>
+        <form>
+            <input type="email" placeholder="Email" required>
+            <input type="text" placeholder="Name" required>
+            <input type="tel" placeholder="Phone Number" required>
+            <textarea placeholder="What the visit is about" required></textarea>
+            <textarea placeholder="Medications" required></textarea>
+            <textarea placeholder="Prior Medical History" required></textarea>
+            <button type="submit">Set Appointment</button>
+        </form>
+    </div>
+</body>
+</html>
