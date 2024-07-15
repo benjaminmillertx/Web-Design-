@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Claymorphism Examples</title>
+ <style>
+ /* Set the styles for the body and html elements */
+ body, html {
+ margin: 0;
+ padding: 0;
+ width: 100%;
+ height: 100%;
+ font-family: Arial, sans-serif;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ }
+ /* Set the styles for the main element */
+ .main {
+ width: 80%;
+ max-width: 800px;
+ padding: 20px;
+ text-align: center;
+ }
+ /* Set the styles for the h1 element inside the main element */
+ .main h1 {
+ margin: 0 0 20px 0;
+ font-size: 3em;
+ }
+ /* Set the styles for the claymorphism element */
+ .claymorphism {
+ width: 200px;
+ height: 200px;
+ background-color: #ff0080;
+ border-radius: 20%;
+ box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2),
+ -10px -10px 20px rgba(255, 255, 255, 0.5);
+ }
+ /* Set the styles for the claymorphism element when it is hovered over */
+ .claymorphism:hover {
+ box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.2),
+ -20px -20px 40px rgba(255, 255, 255, 0.5);
+ }
+ /* Set the styles for the claymorphism-2 element */
+ .claymorphism-2 {
+ width: 250px;
+ height: 250px;
+ background-color: #00ff80;
+ border-radius: 30%;
+ box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2),
+ -10px -10px 20px rgba(255, 255, 255, 0.5);
+ }
+ /* Set the styles for the claymorphism-2 element when it is hovered over */
+ .claymorphism-2:hover {
+ box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.2),
+ -20px -20px 40px rgba(255, 255, 255, 0.5);
+ }
+ /* Set the styles for the claymorphism-3 element */
+ .claymorphism-3 {
+ width: 300px;
+ height: 300px;
+ background-color: #0080ff;
+ border-radius: 40%;
+ box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2),
+ -10px -10px 20px rgba(255, 255, 255, 0.5);
+ }
+ /* Set the styles for the claymorphism-3 element when it is hovered over */
+ .claymorphism-3:hover {
+ box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.2),
+ -20px -20px 40px rgba(255, 255, 255, 0.5);
+ }
+ </style>
+</head>
+<body>
+ <!-- Define the main element and its content -->
+ <div class="main">
+ <h1>Claymorphism Examples</h1>
+ <p>
+ Claymorphism is a design trend that combines the soft and playful aesthetic of clay with the modern look of flat design. This style is characterized by the use of soft shadows, rounded corners, and vibrant colors to create a unique and engaging user experience.
+ </p>
+ <p>
+ Here are some examples of claymorphism elements:
+ </p>
+ </div>
+ <!-- Define the claymorphism element -->
+ <div class="claymorphism"></div>
+ <!-- Define the claymorphism-2 element -->
+ <div class="claymorphism-2"></div>
+ <!-- Define the claymorphism-3 element -->
+ <div class="claymorphism-3"></div>
+</body>
+</html>
