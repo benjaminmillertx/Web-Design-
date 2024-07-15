@@ -1,6 +1,4 @@
-Sure, here is an example of a single HTML page with an experimental navigation style for a restaurant website:
 
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,10 +95,10 @@ body {
 </div>
 </div>
 <div class="footer">
-<p>&copy; 2021 Experimental Restaurant. All rights reserved.</p>
+<p>&copy; 2024 Experimental Restaurant. All rights reserved.</p>
 </div>
 </body>
 </html>
-```
 
-Please note that you will need to replace the placeholder images (`hero-image.jpg`, `dish1.jpg`, `dish2.jpg`, `dish3.jpg`) with actual images for this code to work properly. Additionally, you can further customize and enhance this code to fit your specific needs and design preferences.
+
+sh2.jpg`, `dish3.jpg`) with actual images for this code to work properly. Additionally, you can furt
