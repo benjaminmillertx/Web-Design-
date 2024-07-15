@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Benjamin Miller</title>
+ <style>
+ /* Set the styles for the body and html elements */
+ body, html {
+ margin: 0;
+ padding: 0;
+ width: 100%;
+ height: 100%;
+ font-family: Arial, sans-serif;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ }
+ /* Set the styles for the main element */
+ .main {
+ width: 80%;
+ max-width: 800px;
+ padding: 20px;
+ text-align: center;
+ }
+ /* Set the styles for the h1 element inside the main element */
+ .main h1 {
+ margin: 0 0 20px 0;
+ font-size: 3em;
+ }
+ /* Set the styles for the p element inside the main element */
+ .main p {
+ font-size: 1.2em;
+ }
+ /* Set the styles for the cursor element */
+ .cursor {
+ width: 20px;
+ height: 20px;
+ border-radius: 50%;
+ background-color: #ff0080;
+ position: fixed;
+ top: -10px;
+ left: -10px;
+ z-index: 10000;
+ transition: all 0.2s ease;
+ }
+ /* Set the styles for the cursor element when it is hovering over an interactive element */
+ .cursor:hover {
+ transform: scale(2);
+ }
+ /* Set the styles for the interactive elements */
+ .interactive {
+ cursor: none;
+ }
+ /* Set the styles for the interactive elements when they are hovered over */
+ .interactive:hover .cursor {
+ top: 0;
+ left: 0;
+ }
+ </style>
+</head>
+<body>
+ <!-- Define the main element and its content -->
+ <div class="main">
+ <h1>Benjamin Miller</h1>
+ <p>
+ I am a web designer who specializes in creating custom websites that are both visually appealing and user-friendly. I work with clients to understand their needs and goals, and I deliver high-quality websites that exceed their expectations.
+ </p>
+ <p>
+ In addition to web design, I also offer services in web development, graphic design, and digital marketing. I have experience working with a wide range of clients, from small businesses and startups to large corporations and organizations.
+ </p>
+ </div>
+ <!-- Define the cursor element -->
+ <div class="cursor"></div>
+ <!-- Define the interactive elements -->
+ <div class="interactive">
+ <a href="#">Learn more about my services</a>
+ <a href="#">See my portfolio</a>
+ <a href="#">Contact me</a>
+ </div>
+</body>
+</html>
