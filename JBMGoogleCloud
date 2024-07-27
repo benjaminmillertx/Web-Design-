@@ -1,0 +1,139 @@
+Here is "Java Benjamin Miller" JBMGooglecloud how you might implement a Java logging system specifically for use with Google Cloud. This example includes a `GoogleCloudLogger` class that provides an API for logging messages to Google Cloud. It also includes a `GoogleCloudLoggingAppender` class that implements the `LoggingAppender` interface and that sends the logging events to Google Cloud using the Google Cloud Logging API.
+
+<script>
+@Component
+public class GoogleCloudLogger {
+
+// Define the `googleCloudLoggingAppender` variable
+private GoogleCloudLoggingAppender googleCloudLoggingAppender;
+
+// Define the `projectId` variable
+private String projectId;
+
+// Define the `loggerName` variable
+private String loggerName;
+
+// Define the private constructor
+private GoogleCloudLogger(GoogleCloudLoggingAppender googleCloudLoggingAppender, String projectId, String loggerName) {
+this.googleCloudLoggingAppender = googleCloudLoggingAppender;
+this.projectId = projectId;
+this.loggerName = loggerName;
+}
+
+// Define the `getInstance` method to get the `GoogleCloudLogger` instance
+@Bean
+public static GoogleCloudLogger getInstance() {
+GoogleCloudLoggingAppender appender = new GoogleCloudLoggingAppender();
+return new GoogleCloudLogger(appender, "my-project-id", "my-logger-name");
+}
+
+// Define the `setLoggingLevel` method to set the logging level
+public void setLoggingLevel(int loggingLevel) {
+googleCloudLoggingAppender.setLoggingLevel(loggingLevel);
+}
+
+// Define the `log` method to log a message
+public void log(int level, String message) {
+googleCloudLoggingAppender.append(new LoggingEvent(level, message));
+}
+
+}
+
+public class LoggingEvent {
+
+// Define the `level` variable
+private int level;
+
+// Define the `message` variable
+private String message;
+
+// Define the constructor
+public LoggingEvent(int level, String message) {
+this.level = level;
+this.message = message;
+}
+
+// Define the `getLevel` method to get the level
+public int getLevel() {
+return level;
+}
+
+// Define the `getMessage` method to get the message
+public String getMessage() {
+return message;
+}
+
+}
+
+public interface LoggingAppender {
+
+// Define the `append` method to append a logging event
+public void append(LoggingEvent event);
+
+}
+
+@Component
+public class GoogleCloudLoggingAppender implements LoggingAppender {
+
+// Define the `googleCloudLoggingClient` variable
+private GoogleCloudLoggingClient googleCloudLoggingClient;
+
+// Define the `projectId` variable
+private String projectId;
+
+// Define the `loggerName` variable
+private String loggerName;
+
+// Define the private constructor
+private GoogleCloudLoggingAppender() {
+googleCloudLoggingClient = GoogleCloudLoggingClient.create();
+}
+
+// Define the `setLoggingLevel` method to set the logging level
+public void setLoggingLevel(int loggingLevel) {
+
+// TODO: Implement the `setLoggingLevel` method
+}
+
+// Define the `append` method to append a logging event
+@Override
+public void append(LoggingEvent event) {
+
+// Create the logging payload
+LogEntry.Builder payload = LogEntry
+.newBuilder()
+.setPayload(event.getMessage())
+.setTimestamp(System.currentTimeMillis() * 1000)
+.setSeverity(LogSeverity.valueOf(event.getLevel().toString()));
+
+// Send the logging
+googleCloudLoggingClient.write(GoogleCloudLoggingConfiguration.create(projectId, loggerName), payload.build());
+}
+
+}
+
+@RestController
+@RequestMapping("/logging")
+public class LoggingController {
+
+// Define the `googleCloudLogger` instance
+private GoogleCloudLogger googleCloudLogger = GoogleCloudLogger.getInstance();
+
+// Define the `log` method to log a message
+@PostMapping
+public void log(@RequestParam("level") int level, @RequestParam("message") String message) {
+googleCloudLogger.log(level, message);
+}
+
+}
+</script>
+
+In this example, the `GoogleCloudLogger` class provides an API for logging messages to Google Cloud, and it has a private constructor, a `projectId` variable, a `loggerName` variable, and a `log` method that sends the logging event to Google Cloud using the `GoogleCloudLoggingAppender` instance.
+
+The `GoogleCloudLoggingAppender` class implements the `LoggingAppender` interface, and it defines an `append` method that sends the logging event to Google Cloud using the Google Cloud Logging API.
+
+The `GoogleCloudLogger` class also defines a `setLoggingLevel` method that allows users to set the logging level, and it uses the `GoogleCloudLoggingAppender` class to send the logging events to Google Cloud.
+
+The `LoggingController` class logs the message using the `googleCloudLogger` instance, and it uses the `GoogleCloudLogger.getInstance` method to get the `GoogleCloudLogger` instance.
+
+I hope this helps! Let me know if you have any other questions.
