@@ -1,4 +1,4 @@
-Made by Benjamin Hunter Miller feel free to Here is a list of some new commands that you can use in the new language to interact with a MySQL database in a way that is similar to how you would interact with a Linux file system:
+SQLLinux Made by Benjamin Hunter Miller feel free to contribute. Here is a list of some new commands that you can use in the new language to interact with a MySQL database in a way that is similar to how you would interact with a Linux file system:
 
 **`mktable` (Make Table) vs. `CREATE TABLE`**
 
