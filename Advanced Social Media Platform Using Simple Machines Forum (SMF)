@@ -1,0 +1,230 @@
+Advanced Social Media Platform Using Simple Machines Forum (SMF)
+By Benjamin Hunter Miller
+
+This documentation outlines how to extend the core features of Simple Machines Forum (SMF) to build a robust social media platform. We'll explore modern features like user profiles, activity feeds, real-time notifications, and a friends/following system.
+
+System Requirements
+SMF (Simple Machines Forum): The base forum software.
+Web Server: Apache/Nginx.
+PHP 7.4+: Required for SMF.
+MySQL/MariaDB: Database support.
+JavaScript/Node.js (for real-time features, optional but recommended).
+Key Features of the Platform
+Enhanced User Profiles
+
+Users can set profile pictures, write bios, view friends, and see their posts.
+Real-Time Notifications
+
+Instant notifications when someone likes your post, sends a message, or accepts a friend request.
+Activity Feed (Timeline)
+
+A dynamic feed that shows posts from people you follow or your friends.
+Friendship and Follow System
+
+Users can send and approve friend requests, and follow each other’s public posts.
+Private Messaging and Chat
+
+Enhanced messaging system, supporting group chats and media sharing.
+Media Uploads
+
+Upload photos and videos with posts.
+System Design
+Database Design
+New Tables for Social Media Features:
+smf_friends: Tracks friendships.
+smf_notifications: Stores notification data.
+smf_feed_posts: Stores social media-style posts.
+smf_likes: Tracks likes/reactions to posts.
+smf_media: Tracks uploaded media files.
+sql
+Copy code
+CREATE TABLE smf_friends (
+    user_id INT NOT NULL,
+    friend_id INT NOT NULL,
+    status ENUM('pending', 'approved') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    type VARCHAR(255),
+    related_id INT,  -- Could be post ID, message ID, etc.
+    message TEXT,
+    is_read TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_feed_posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    post_content TEXT,
+    media_id INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_likes (
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_media (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    file_path VARCHAR(255),
+    type ENUM('image', 'video'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+Backend Functionality
+1. User Profiles
+We extend the existing SMF profile system by adding support for profile pictures, bios, and displaying a list of friends or followers.
+
+Database Changes:
+Add new columns to the existing smf_members table for profile data.
+
+sql
+Copy code
+ALTER TABLE smf_members
+ADD COLUMN profile_picture VARCHAR(255) DEFAULT 'default.png',
+ADD COLUMN bio TEXT DEFAULT '';
+Modifying Profile Page (Profile.template.php)
+We update the profile template to include the new fields.
+
+php
+Copy code
+// Display profile info in Profile.template.php
+
+echo '
+<div class="user-profile">
+    <h1>', $context['member']['name'], '</h1>
+    <img src="', $context['member']['profile_picture'], '" alt="Profile Picture" class="profile-pic">
+    <p>', $context['member']['bio'], '</p>
+    
+    <h3>Friends</h3>
+    <ul>';
+    foreach ($context['member']['friends'] as $friend) {
+        echo '<li>' . $friend['name'] . '</li>';
+    }
+echo '</ul>
+</div>';
+Friendship System
+We add friend request functionality with pending and approved statuses.
+
+Function to Send Friend Request (Friends.php)
+php
+Copy code
+function sendFriendRequest($fromUserId, $toUserId) {
+    global $db_prefix;
+    smf_db_query("
+        INSERT INTO {$db_prefix}friends (user_id, friend_id, status) 
+        VALUES ($fromUserId, $toUserId, 'pending')");
+}
+Approving a Friend Request (Friends.php)
+php
+Copy code
+function approveFriendRequest($fromUserId, $toUserId) {
+    global $db_prefix;
+    smf_db_query("
+        UPDATE {$db_prefix}friends 
+        SET status = 'approved' 
+        WHERE user_id = $fromUserId AND friend_id = $toUserId");
+}
+2. Real-Time Notifications
+Database for Notifications (smf_notifications)
+We store notifications like new messages, friend requests, and likes in a notifications table.
+
+php
+Copy code
+function notifyUser($userId, $type, $relatedId, $message) {
+    global $db_prefix;
+    smf_db_query("
+        INSERT INTO {$db_prefix}notifications (user_id, type, related_id, message, is_read) 
+        VALUES ($userId, '$type', $relatedId, '$message', 0)");
+}
+Real-Time Notification Display (Using JavaScript)
+We can use either AJAX polling or WebSocket to display notifications in real-time.
+
+javascript
+Copy code
+// JavaScript to poll notifications via AJAX
+setInterval(function() {
+    $.get('fetch_notifications.php', function(data) {
+        $('#notification-count').html(data.count);
+        $('#notification-list').html(data.notifications);
+    });
+}, 5000);
+3. Activity Feed (Timeline)
+The timeline shows recent posts by friends or users followed.
+
+Fetching Posts for the Feed (NewsFeed.php)
+php
+Copy code
+function getUserFeed($userId) {
+    global $db_prefix;
+    
+    // Get a list of friends/following
+    $friendIds = smf_db_query("
+        SELECT friend_id FROM {$db_prefix}friends 
+        WHERE user_id = $userId AND status = 'approved'");
+    
+    $friendList = implode(',', $friendIds);
+    
+    // Fetch posts from friends
+    return smf_db_query("
+        SELECT p.post_content, p.created_at, u.username 
+        FROM {$db_prefix}feed_posts AS p
+        JOIN {$db_prefix}members AS u ON p.user_id = u.id_member
+        WHERE p.user_id IN ($friendList)
+        ORDER BY p.created_at DESC");
+}
+Display Posts (NewsFeed.template.php)
+php
+Copy code
+foreach ($feedPosts as $post) {
+    echo '
+    <div class="feed-post">
+        <h3>', $post['username'], '</h3>
+        <p>', $post['post_content'], '</p>
+        <small>', time_ago($post['created_at']), '</small>
+    </div>';
+}
+4. Media Uploads
+Uploading Media (UploadMedia.php)
+This function allows users to upload images or videos to accompany posts.
+
+php
+Copy code
+function uploadMedia($userId, $file) {
+    global $db_prefix;
+    
+    $uploadDir = 'uploads/media/';
+    $fileName = basename($file['name']);
+    $targetFile = $uploadDir . $fileName;
+
+    // Move the uploaded file to the media directory
+    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+        // Save media information in the database
+        $fileType = (strpos($file['type'], 'image') !== false) ? 'image' : 'video';
+        smf_db_query("
+            INSERT INTO {$db_prefix}media (user_id, file_path, type)
+            VALUES ($userId, '$targetFile', '$fileType')");
+        return true;
+    }
+    return false;
+}
+This advanced social media platform uses Simple Machines Forum as a foundation. By extending the core functionality to include social features like a timeline, friend system, real-time notifications, and media uploads, it provides a full-featured user experience.
+
+By following the steps above, developers can create a powerful, community-driven social media platform. Continue scaling with optimizations for performance and usability, and gradually add features such as mobile support, group chats, and event creation to further enrich the platform.
+
+By Benjamin Hunter Miller
+
+
+
+
+
+
+
+
+
+ChatGPT can make mistakes. Check
