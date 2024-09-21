@@ -1,0 +1,267 @@
+Advanced Social Media Platform for Photo and Video Sharing
+By Benjamin Hunter Miller
+
+This guide outlines the creation of an advanced social media platform focused on photo and video sharing. The platform is inspired by photo-centric social networks where users upload images and videos, follow others, interact through likes and comments, and explore trending content.
+
+System Requirements
+Simple Machines Forum (SMF): The base forum software.
+Web Server: Apache/Nginx.
+PHP 7.4+: Required for SMF.
+MySQL/MariaDB: Database support.
+JavaScript: For real-time interactions and media previews.
+Node.js/WebSocket: Optional, for real-time notifications and updates.
+Key Features
+Photo and Video Sharing
+
+Users can upload photos and videos with captions.
+Media posts are shown in a grid layout on user profiles.
+Posts can be liked, commented on, and shared.
+Explore Feature
+
+Trending content (photos and videos) based on likes and engagement.
+Follow System
+
+Users can follow others to see their posts in a feed.
+Real-Time Notifications
+
+Notifications for likes, comments, new followers, etc.
+Hashtags
+
+Users can add hashtags to their posts, and hashtags are searchable.
+Profile Customization
+
+Users can update their profile picture, bio, and manage their followers.
+System Design
+Database Structure
+To store user posts, media files, likes, comments, and follower relationships, we extend the SMF database with new tables:
+
+New Tables for Media Sharing Platform:
+smf_media_posts: Stores media posts.
+smf_media_likes: Tracks likes for each media post.
+smf_media_comments: Stores comments on media posts.
+smf_follows: Tracks the following relationship between users.
+sql
+Copy code
+CREATE TABLE smf_media_posts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    caption TEXT,
+    media_file VARCHAR(255),
+    media_type ENUM('image', 'video'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_media_likes (
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_media_comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT NOT NULL,
+    user_id INT NOT NULL,
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE smf_follows (
+    follower_id INT NOT NULL,
+    followed_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+Backend Functionality
+1. Media Uploads
+Users will be able to upload photos or videos to their profile with captions. We will handle media uploads via PHP, and store the media paths in the database.
+
+Uploading Media (UploadMedia.php)
+php
+Copy code
+function uploadMediaPost($userId, $file, $caption) {
+    global $db_prefix;
+    
+    $uploadDir = 'uploads/media/';
+    $fileName = basename($file['name']);
+    $targetFile = $uploadDir . $fileName;
+    $fileType = (strpos($file['type'], 'image') !== false) ? 'image' : 'video';
+
+    // Move uploaded file to media directory
+    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+        // Insert media post into the database
+        smf_db_query("
+            INSERT INTO {$db_prefix}media_posts (user_id, caption, media_file, media_type)
+            VALUES ($userId, '$caption', '$targetFile', '$fileType')");
+        return true;
+    }
+    return false;
+}
+2. Media Feed (Explore Page)
+The Explore Page will display popular posts, based on the number of likes and engagement, and allow users to discover new content.
+
+Fetching Popular Posts (Explore.php)
+php
+Copy code
+function getPopularPosts() {
+    global $db_prefix;
+    
+    // Fetch posts sorted by the number of likes
+    return smf_db_query("
+        SELECT p.id, p.caption, p.media_file, p.media_type, COUNT(l.post_id) as like_count
+        FROM {$db_prefix}media_posts AS p
+        LEFT JOIN {$db_prefix}media_likes AS l ON p.id = l.post_id
+        GROUP BY p.id
+        ORDER BY like_count DESC
+        LIMIT 20");
+}
+Display Popular Posts (Explore.template.php)
+We can display the posts in a grid layout, where media (images/videos) will appear with captions.
+
+php
+Copy code
+foreach ($popularPosts as $post) {
+    echo '
+    <div class="explore-post">
+        <img src="', $post['media_file'], '" alt="Post Media" class="post-image">
+        <p>', $post['caption'], '</p>
+        <span>Likes: ', $post['like_count'], '</span>
+    </div>';
+}
+3. User Feed (Home Page)
+The feed displays posts from users the current user follows, in chronological order.
+
+Fetching Feed Posts (Feed.php)
+php
+Copy code
+function getFeedPosts($userId) {
+    global $db_prefix;
+    
+    // Get a list of users that the current user follows
+    $followedUsers = smf_db_query("
+        SELECT followed_id FROM {$db_prefix}follows WHERE follower_id = $userId");
+
+    $followedList = implode(',', $followedUsers);
+    
+    // Fetch posts from followed users
+    return smf_db_query("
+        SELECT p.id, p.caption, p.media_file, p.media_type, u.username, p.created_at
+        FROM {$db_prefix}media_posts AS p
+        JOIN {$db_prefix}members AS u ON p.user_id = u.id_member
+        WHERE p.user_id IN ($followedList)
+        ORDER BY p.created_at DESC");
+}
+Display Feed Posts (Feed.template.php)
+The feed displays posts in a vertical list with the media (image/video) and a caption.
+
+php
+Copy code
+foreach ($feedPosts as $post) {
+    echo '
+    <div class="feed-post">
+        <h3>', $post['username'], '</h3>
+        <img src="', $post['media_file'], '" alt="Post Media" class="feed-image">
+        <p>', $post['caption'], '</p>
+        <small>', time_ago($post['created_at']), '</small>
+    </div>';
+}
+4. Likes and Comments
+Like Post (LikePost.php)
+php
+Copy code
+function likePost($postId, $userId) {
+    global $db_prefix;
+
+    // Check if the user has already liked the post
+    $alreadyLiked = smf_db_query("
+        SELECT id FROM {$db_prefix}media_likes WHERE post_id = $postId AND user_id = $userId");
+
+    if (empty($alreadyLiked)) {
+        // Insert the like into the database
+        smf_db_query("
+            INSERT INTO {$db_prefix}media_likes (post_id, user_id)
+            VALUES ($postId, $userId)");
+    }
+}
+Comment on Post (CommentPost.php)
+php
+Copy code
+function commentOnPost($postId, $userId, $commentText) {
+    global $db_prefix;
+    
+    // Insert the comment into the database
+    smf_db_query("
+        INSERT INTO {$db_prefix}media_comments (post_id, user_id, comment)
+        VALUES ($postId, $userId, '$commentText')");
+}
+Displaying Comments (Comments.template.php)
+php
+Copy code
+foreach ($postComments as $comment) {
+    echo '
+    <div class="comment">
+        <p><strong>', $comment['username'], ':</strong> ', $comment['comment'], '</p>
+        <small>', time_ago($comment['created_at']), '</small>
+    </div>';
+}
+5. Follow System
+Follow/Unfollow Users (Follow.php)
+php
+Copy code
+function followUser($followerId, $followedId) {
+    global $db_prefix;
+
+    // Check if the user is already following
+    $alreadyFollowing = smf_db_query("
+        SELECT * FROM {$db_prefix}follows WHERE follower_id = $followerId AND followed_id = $followedId");
+
+    if (empty($alreadyFollowing)) {
+        // Insert follow relationship into the database
+        smf_db_query("
+            INSERT INTO {$db_prefix}follows (follower_id, followed_id)
+            VALUES ($followerId, $followedId)");
+    }
+}
+
+function unfollowUser($followerId, $followedId) {
+    global $db_prefix;
+
+    // Remove follow relationship
+    smf_db_query("
+        DELETE FROM {$db_prefix}follows WHERE follower_id = $followerId AND followed_id = $followedId");
+}
+Displaying Followers on Profile (Profile.template.php)
+php
+Copy code
+echo '<h3>Followers</h3><ul>';
+foreach ($followers as $follower) {
+    echo '<li>', $follower['username'], '</li>';
+}
+echo '</ul>';
+Real-Time Notifications
+Notifications for new likes, comments, and followers will be delivered in real-time via AJAX polling or WebSocket.
+
+Fetching Notifications via AJAX (FetchNotifications.php)
+php
+Copy code
+function fetchNotifications($userId) {
+    global $db_prefix;
+    
+    return smf_db_query("
+        SELECT * FROM {$db_prefix}notifications 
+        WHERE user_id = $userId AND is_read = 0
+        ORDER BY created_at DESC");
+}
+JavaScript for AJAX Polling
+javascript
+Copy code
+setInterval(function() {
+    $.get('fetch_notifications.php', function(data) {
+        $('#notification-count').html(data.count);
+        $('#notification-list').html(data.notifications);
+    });
+}, 5000);
+
+This social media platform focuses on photo and video sharing, with core features like media uploads, an explore page for trending content, a user feed, likes, comments, and a follow system. It provides real-time notifications to enhance user engagement, creating a dynamic and interactive platform.
+
+This solution is flexible, allowing for scalability and feature enhancements, such as integrating direct messages, stories, or live streaming. It provides a solid foundation for a modern media-sharing social network, built upon Simple Machines Forum.
+
+By Benjamin Hunter Miller
